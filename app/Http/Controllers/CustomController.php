@@ -2,63 +2,50 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Custom;
 use Illuminate\Http\Request;
 
 class CustomController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // Menampilkan semua data custom
     public function index()
     {
-        //
+        $customs = Custom::all();
+        return view('customs.index', compact('customs'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    // Menampilkan form tambah data custom
     public function create()
     {
-        //
+        return view('customs.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+    // Menyimpan data custom baru
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+// ...existing code...
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+public function store(Request $request)
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'description' => 'nullable|string|max:1000',
+    ]);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+    Custom::create($request->all());
+    return redirect()->route('customs.index')->with('success', 'Data berhasil ditambahkan.');
+}
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
+public function update(Request $request, $id)
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'description' => 'nullable|string|max:1000',
+    ]);
+
+    $custom = Custom::findOrFail($id);
+    $custom->update($request->all());
+    return redirect()->route('customs.index')->with('success', 'Data berhasil diupdate.');
+}
+
+// ...existing code...
 }
